@@ -1,0 +1,92 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: docker-httpd-with-init
+    name: docker-httpd-with-init
+  spec:
+    replicas: 1
+    selector:
+      app: docker-httpd-with-init
+      deploymentconfig: docker-httpd-with-init
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        labels:
+          app: docker-httpd-with-init
+          deploymentconfig: docker-httpd-with-init
+      spec:
+        containers:
+        - image: docker-httpd:latest
+          name: docker-httpd
+          ports:
+          - containerPort: 8000
+            protocol: TCP
+          resources: {}
+          volumeMounts:
+          - mountPath: /srv
+            name: data    
+        initContainers:
+        - command:
+          - /bin/sh
+          - -c
+          - echo -e Hello init world > /srv/init.html ; date >> /srv/init.html
+          image: registry.access.redhat.com/rhel7-atomic
+          imagePullPolicy: Always
+          name: init-httpd
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /srv
+            name: data    
+        volumes:
+          - name: data
+            emptyDir: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - docker-httpd
+        from:
+          kind: ImageStreamTag
+          name: docker-httpd:latest
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: docker-httpd-with-init
+    name: docker-httpd-with-init
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      app: docker-httpd-with-init
+      deploymentconfig: docker-httpd-with-init
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: docker-httpd-with-init
+    name: docker-httpd-with-init
+  spec:
+    port:
+      targetPort: 8000-tcp
+    to:
+      kind: Service
+      name: docker-httpd-with-init
+      weight: 100
+    wildcardPolicy: None
+kind: List
+metadata: {}
