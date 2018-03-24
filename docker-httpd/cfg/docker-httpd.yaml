@@ -1,0 +1,114 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: docker-httpd
+    name: docker-httpd
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: docker-httpd
+    name: docker-httpd
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: docker-httpd:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: docker-httpd
+      git:
+        ref: master
+        uri: https://github.com/martineg/ocp-labs.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: python:3.5
+          namespace: openshift
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: docker-httpd
+    name: docker-httpd
+  spec:
+    replicas: 1
+    selector:
+      app: docker-httpd
+      deploymentconfig: docker-httpd
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        labels:
+          app: docker-httpd
+          deploymentconfig: docker-httpd
+      spec:
+        containers:
+        - image: docker-httpd:latest
+          name: docker-httpd
+          ports:
+          - containerPort: 8000
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - docker-httpd
+        from:
+          kind: ImageStreamTag
+          name: docker-httpd:latest
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: docker-httpd
+    name: docker-httpd
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      app: docker-httpd
+      deploymentconfig: docker-httpd
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: docker-httpd
+    name: docker-httpd
+  spec:
+    port:
+      targetPort: 8000-tcp
+    to:
+      kind: Service
+      name: docker-httpd
+      weight: 100
+    wildcardPolicy: None
+kind: List
+metadata: {}
