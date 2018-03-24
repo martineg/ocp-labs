@@ -17,10 +17,15 @@ def index():
                            features=FEATURES)
 
 
+@app.route("/version")
+def version():
+    return jsonify(version=APP_VERSION, features=FEATURES)
+
+
 @app.route("/healthz")
 def healthz():
     if APP_HEALTH_OK:
-        return jsonify(healthy=APP_HEALTH_OK, version=APP_VERSION, features=FEATURES)
+        return jsonify(healthy=APP_HEALTH_OK)
     else:
         abort(500)
 
