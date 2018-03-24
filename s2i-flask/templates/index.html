@@ -1,0 +1,13 @@
+<title>Hello OCP world</title>
+Hello OCP world!
+This is version {{ version }} running on {{ name }}.
+{% if features %}
+    I have the following features :
+    <ul>
+    {% for feature in features %}
+        <li>{{ feature }}
+    {% endfor %}
+    </ul>
+{% else %}
+This is the default version of the app.
+{% endif %}
