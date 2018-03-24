@@ -5,23 +5,22 @@ app = Flask(__name__)
 
 APP_HEALTH_OK = True
 APP_VERSION = 1.0
+FEATURES = [os.environ.get(feat)
+            for feat in os.environ if feat.startswith("FEAT_")]
 
 
 @app.route("/")
 def index():
-    features = [os.environ.get(feat)
-                for feat in os.environ if feat.startswith("FEAT_")]
-
     return render_template('index.html',
                            version=APP_VERSION,
                            name=os.environ.get("HOSTNAME", "localhost"),
-                           features=features)
+                           features=FEATURES)
 
 
 @app.route("/healthz")
 def healthz():
     if APP_HEALTH_OK:
-        return jsonify(healthy=APP_HEALTH_OK, version=APP_VERSION)
+        return jsonify(healthy=APP_HEALTH_OK, version=APP_VERSION, features=FEATURES)
     else:
         abort(500)
 
