@@ -5,8 +5,7 @@ app = Flask(__name__)
 
 APP_HEALTH_OK = True
 APP_VERSION = 1.0
-FEATURES = [os.environ.get(feat)
-            for feat in os.environ if feat.startswith("FEAT_")]
+FEATURES = [ (feat, os.environ.get(feat)) for feat in os.environ if feat.startswith("FEAT_")]
 
 
 @app.route("/")
@@ -14,7 +13,7 @@ def index():
     return render_template('index.html',
                            version=APP_VERSION,
                            name=os.environ.get("HOSTNAME", "localhost"),
-                           features=FEATURES)
+                           features=dict(FEATURES))
 
 
 @app.route("/version")
