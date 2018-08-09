@@ -1,13 +1,21 @@
-<title>Hello OCP world</title>
-Hello OCP world!
-This is version {{ version }} running on {{ name }}.
-{% if features %}
-    I have the following features :
-    <ul>
-    {% for feature in features %}
-        <li>{{ feature }}
-    {% endfor %}
-    </ul>
-{% else %}
-This is the default version of the app.
-{% endif %}
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <title>Hello OCP world</title>
+</head>
+<body>
+    Hello OCP world!<br>
+    This is version {{ version }} running on {{ name }}.<br>
+    {% if features %}
+    <p>
+        I have the following features :
+        <ul>
+        {% for feature in features %}
+            <li>{{ feature }}
+        {% endfor %}
+        </ul>
+    </p>
+    {% else %}
+    This is the default version of the app.
+    {% endif %}
+</body>
