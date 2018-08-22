@@ -3,8 +3,11 @@ kind: Template
 metadata:
   creationTimestamp: null
   name: docker-httpd
+  annotations:
+    description: "Dockerfile based httpd demo"
+    iconClass: "icon-apache"
 labels:
-  app: ${APP_NAME}
+  app: docker-httpd
 objects:
 - apiVersion: v1
   kind: ImageStream
