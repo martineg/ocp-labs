@@ -1,0 +1,45 @@
+def templatePath = 'docker-httpd/cfg/docker-httpd-template.yaml'
+def templateName = 'docker-httpd'
+def repoUrl = 'https://github.com/martineg/ocp-labs'
+
+pipeline {
+    agent any
+    options {
+        skipDefaultCheckout()
+    }
+    stages {
+        stage('Init and checkout') {
+            steps {
+                echo 'Setup'
+                git repoUrl
+                stash includes: 'docker-httpd/**', name: 'src'
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.selector("all", [ app : templateName ]).delete()
+                    }
+                }
+                
+            }
+        }
+        stage('Apply template') {
+            steps {
+                unstash 'src'
+                script {
+                    openshift.withCluster() {
+                        openshift.newApp(templatePath)
+                    }
+                }
+            }
+        }
+        stage('Deploy to DEV') {
+            steps {
+                // implicit deploy on image change
+                echo 'Deploy to dev environment'
+            }
+        }
+    }
+}
