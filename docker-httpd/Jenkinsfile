@@ -15,6 +15,7 @@ pipeline {
                 stash includes: 'docker-httpd/**', name: 'src'
             }
         }
+
         stage('Cleanup') {
             steps {
                 script {
@@ -22,9 +23,9 @@ pipeline {
                         openshift.selector("all", [ app : templateName ]).delete()
                     }
                 }
-                
             }
         }
+
         stage('Apply template') {
             steps {
                 unstash 'src'
@@ -35,6 +36,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Build') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        def builds = openshift.selector("bc", templateName).related('builds')
+                        timeout(5) {
+                            builds.untilEach(1) {
+                                return (it.object().status.phase == "Complete")
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+
         stage('Deploy to DEV') {
             steps {
                 // implicit deploy on image change
