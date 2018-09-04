@@ -58,5 +58,14 @@ pipeline {
                 echo 'Deploy to dev environment'
             }
         }
+        stage('Smoketest in DEV') {
+            steps {
+                sh '''#! /bin/sh -xe
+                sleep 5s
+                route=$(oc get route docker-httpd -o jsonpath=\'{.spec.host}\')
+                curl -vsS $route | grep -q "200 OK"
+                '''
+            }
+        }
     }
 }
