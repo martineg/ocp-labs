@@ -75,7 +75,7 @@ pipeline {
                 sh '''#! /bin/sh -xe
                 sleep 5s
                 route=$(oc get route docker-httpd -o jsonpath=\'{.spec.host}\')
-                curl -vsS $route | grep -q "200 OK"
+                curl -vsS $route | grep -q "Hello OCP"
                 '''
             }
         }
