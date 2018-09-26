@@ -17,6 +17,20 @@ pipeline {
                 stash includes: 's2i-flask/**', name: 'src'
             }
         }
+        stage('Run basic tests') {
+            steps {
+                dir('s2i-flask') {
+                    sh '''#! /bin/bash -xe
+                    virtualenv /tmp/basic-test
+                    source /tmp/basic-test/bin/activate
+                    pip install -r requirements.txt
+                    flask routes
+                    deactivate
+                    rm -rf /tmp/basic-test
+                    '''
+                }
+            }
+        }
 
         stage('Cleanup') {
             steps {
