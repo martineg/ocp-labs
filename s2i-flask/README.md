@@ -17,5 +17,5 @@ Define and build the Python Jenkins slave
 and then create the build pipeline
 
 ```
-oc new-build 'https://github.com/martineg/ocp-labs#python-jenkins-build' --context-dir=s2i-flask --name=s2i-flask-pipeline
+oc new-build https://github.com/martineg/ocp-labs --context-dir=s2i-flask --name=s2i-flask-pipeline
 ```
