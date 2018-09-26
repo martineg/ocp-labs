@@ -1,0 +1,95 @@
+def templatePath = 's2i-flask/cfg/s2i-flask-template.yaml'
+def templateName = 's2i-flask'
+def repoUrl = 'https://github.com/martineg/ocp-labs'
+
+pipeline {
+    agent {
+        label 'jenkins-slave-python'
+    }
+    options {
+        skipDefaultCheckout()
+    }
+    stages {
+        stage('Init and checkout') {
+            steps {
+                echo 'Setup'
+                git repoUrl
+                stash includes: 's2i-flask/**', name: 'src'
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.selector("all", [ app : templateName ]).delete()
+                    }
+                }
+            }
+        }
+
+        stage('Apply template') {
+            steps {
+                unstash 'src'
+                script {
+                    openshift.withCluster() {
+                        openshift.newApp(templatePath)
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        def builds = openshift.selector("bc", templateName).related('builds')
+                        timeout(5) {
+                            builds.untilEach(1) {
+                                return (it.object().status.phase == "Complete")
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+
+        stage('Deploy to DEV') {
+            steps {
+                // implicit deploy on image change
+                echo 'Deploy to DEV environment'
+                script {
+                    openshift.withCluster() {
+                        def latestDeploymentVersion = openshift.selector('dc',"${templateName}").object().status.latestVersion
+                        def rc = openshift.selector('rc', "${templateName}-${latestDeploymentVersion}")
+                        rc.untilEach(1) {
+                            def rcMap = it.object()
+                            return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
+                        }
+                    }
+                }
+                echo 'Deployment to DEV completed'
+            }
+        }
+
+        stage('Smoketest in DEV') {
+            steps {
+                sh '''#! /bin/sh -xe
+                sleep 5s
+                route=$(oc get route s2i-flask -o jsonpath=\'{.spec.host}\')
+                curl -vsS $route | grep -q "Hello"
+                '''
+            }
+        }
+
+        stage('Tag for TEST') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.tag("${templateName}:latest", "${templateName}:test")
+                    }
+                }
+            }
+        }
+    }
+}
