@@ -6,6 +6,7 @@ pipeline {
     agent any
     options {
         skipDefaultCheckout()
+        durabilityHint('PERFORMANCE_OPTIMIZED')
     }
     stages {
         stage('Init and checkout') {
