@@ -6,7 +6,7 @@ Includes version and basic environment-based feature toggle to demonstrate vario
 Define and build the Python Jenkins slave
 
 ```
-    oc process -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/jenkins-slaves/.openshift/templates/jenkins-slave-generic-template.yml  \
+    oc process -f https://raw.githubusercontent.com/redhat-cop/containers-quickstarts/master/.openshift/templates/jenkins-slave-generic-template.yml \
     -p NAME=jenkins-slave-python \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-python \
     -p DOCKERFILE_PATH=Dockerfile \
