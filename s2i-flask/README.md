@@ -10,7 +10,7 @@ Define and build the Python Jenkins slave
     -p NAME=jenkins-slave-python \
     -p SOURCE_CONTEXT_DIR=jenkins-slaves/jenkins-slave-python \
     -p DOCKERFILE_PATH=Dockerfile \
-    -p BUILDER_IMAGE_NAME=openshift/jenkins-slave-base-centos7 \
+    -p BUILDER_IMAGE_NAME=quay.io/openshift/origin-jenkins-agent-base:4.4 \
     | oc create -f -
 ```
 
