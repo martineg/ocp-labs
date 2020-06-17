@@ -9,10 +9,14 @@ FEATURES = [ (feat, os.environ.get(feat)) for feat in os.environ if feat.startsw
 
 @app.route("/")
 def index():
-    return render_template('index.html',
-                           version=APP_VERSION,
-                           name=os.environ.get("HOSTNAME", "localhost"),
-                           features=dict(FEATURES))
+
+    if request.is_json:
+        return redirect(url_for("version"))
+    else:
+        return render_template('index.html',
+                            version=APP_VERSION,
+                            name=os.environ.get("HOSTNAME", "localhost"),
+                            features=dict(FEATURES))
 
 
 @app.route("/version")
