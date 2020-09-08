@@ -19,8 +19,7 @@ spec:
       uri: https://github.com/martineg/ocp-labs.git
     type: Git
   strategy:
-    dockerStrategy:
-      dockerfilePath: iperf/Dockerfile
+    dockerStrategy: {}
     type: Docker
   successfulBuildsHistoryLimit: 5
   triggers:
