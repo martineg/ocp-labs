@@ -5,6 +5,18 @@ metadata:
   labels:
     app: iperf
 spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - iperf
+          topologyKey: kubernetes.io/hostname
   containers:
   - name: server
     image: iperf:latest
@@ -16,6 +28,18 @@ metadata:
   labels:
     app: iperf
 spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - iperf
+          topologyKey: kubernetes.io/hostname
   containers:
   - name: client
     image: iperf:latest
