@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf-server
+  labels:
+    app: iperf
+spec:
+  containers:
+  - name: server
+    image: iperf:latest
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf-client
+  labels:
+    app: iperf
+spec:
+  containers:
+  - name: client
+    image: iperf:latest

@@ -1,0 +1,27 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    build: iperf
+    app: iperf
+  name: iperf
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: iperf:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: iperf
+    git:
+      ref: iperf
+      uri: https://github.com/martineg/ocp-labs.git
+    type: Git
+  strategy:
+    dockerStrategy: {}
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - type: ConfigChange
