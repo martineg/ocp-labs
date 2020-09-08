@@ -3,6 +3,7 @@ kind: ImageStream
 metadata:
   labels:
     build: iperf
+    app: iperf
   name: iperf
 spec:
   lookupPolicy:
