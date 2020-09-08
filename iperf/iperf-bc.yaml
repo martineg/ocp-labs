@@ -20,9 +20,7 @@ spec:
     type: Git
   strategy:
     dockerStrategy:
-      from:
-        kind: ImageStreamTag
-        name: centos:7
+      dockerfilePath: iperf/Dockerfile
     type: Docker
   successfulBuildsHistoryLimit: 5
   triggers:
