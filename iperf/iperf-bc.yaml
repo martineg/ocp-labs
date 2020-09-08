@@ -16,7 +16,7 @@ spec:
   source:
     contextDir: iperf
     git:
-      ref: iperf
+      ref: master
       uri: https://github.com/martineg/ocp-labs.git
     type: Git
   strategy:
