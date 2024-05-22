@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    app.openshift.io/route-disabled: "false"
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/martineg/ocp-labs/
+  labels:
+    app: hello-flask
+    app.kubernetes.io/component: hello-flask
+    app.kubernetes.io/instance: hello-flask
+    app.kubernetes.io/name: hello-flask
+    app.kubernetes.io/part-of: hello-flask
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: 3.11-ubi8
+  name: hello-flask
+  namespace: app1-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-flask
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        app: hello-flask
+        deployment: hello-flask
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/app1-dev/hello-flask:latest
+        name: hello-flask
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 100m
+            memory: 32Mi
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
