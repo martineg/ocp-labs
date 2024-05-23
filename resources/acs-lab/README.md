@@ -10,3 +10,4 @@ rox_central_endpoint=central-stackrox.apps.cluster01.labs.local:443
 rox_api_token=my-ci-token-value
 EOF
 ```
+
