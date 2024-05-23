@@ -3,4 +3,6 @@ kind: Kustomization
 secretGenerator:
   - name: acs-token
     envs:
-      - ../acs.env
+      - ./acs.env
+generatorOptions:
+  disableNameSuffixHash: true
