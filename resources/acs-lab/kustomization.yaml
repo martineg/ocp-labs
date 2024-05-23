@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ./app1-dev-ns
+- ./acs-ci-config
+- ./hello-flask-deployment
+- ./hello-flask-pipeline

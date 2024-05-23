@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: hello-flask-
+spec:
+  pipelineRef:
+    name: hello-flask
+  workspaces:
+    - name: workspace # this workspace name must be declared in the Pipeline
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+              
