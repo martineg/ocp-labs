@@ -86,6 +86,7 @@ spec:
       value: oc rollout status deploy/$(params.APP_NAME)
     runAfter:
     - stackrox-image-check
+    - rox-deployment-check
     taskRef:
       kind: ClusterTask
       name: openshift-client
