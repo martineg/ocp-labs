@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
 - ./app1-dev-ns
 - ./hello-flask-deployment
-
+- ./hello-flask-pipeline
