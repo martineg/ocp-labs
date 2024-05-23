@@ -5,7 +5,7 @@ Before applying create a secret `acs_token` containing two key values for `rox_a
 
 Example:
 ```
-oc create secret generic acs-token --from-literal rox_central_endpoint=central-stackrox.apps.cluster01.lab.:443 --from-literal rox_api_token=my-generated-ci-token
+oc -n app1-dev create secret generic acs-token --from-literal rox_central_endpoint=central-stackrox.apps.cluster01.lab.:443 --from-literal rox_api_token=my-generated-ci-token
 ```
 
 then apply the pipeline resources:

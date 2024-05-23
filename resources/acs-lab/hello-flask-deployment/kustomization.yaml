@@ -4,8 +4,3 @@ resources:
 - hello-flask-deployment.yaml
 - hello-flask-svc.yaml
 - hello-flask-route.yaml
-
-components:
-- ../components/hello-flask-pipeline/
-
-namespace: app1-dev
