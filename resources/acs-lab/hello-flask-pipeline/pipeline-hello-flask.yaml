@@ -41,6 +41,10 @@ spec:
     description: Secret containing the ACS API token with CI permissions
     name: ACS_API_TOKEN
     type: string
+  - default: resources/acs-lab/hello-flask-deployment/hello-flask-deployment.yaml
+    description: Path to deployment artefact
+    name: DEPLOYMENT_FILE
+    type: string
   tasks:
   - name: fetch-repository
     params:
@@ -117,5 +121,21 @@ spec:
     taskRef:
       kind: Task
       name: stackrox-image-check
+  - name: rox-deployment-check
+    params:
+    - name: rox_central_endpoint
+      value: $(params.ACS_ENDPOINT)
+    - name: rox_api_token
+      value: $(params.ACS_API_TOKEN)
+    - name: file
+      value: $(params.DEPLOYMENT_FILE)
+    runAfter:
+    - stackrox-image-scan
+    taskRef:
+      kind: Task
+      name: rox-deployment-check
+    workspaces:
+    - name: deployfiles
+      workspace: workspace
   workspaces:
   - name: workspace

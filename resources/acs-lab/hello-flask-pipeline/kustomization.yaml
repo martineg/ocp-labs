@@ -5,3 +5,4 @@ resources:
 - tekton-task-stackrox-image-check.yaml
 - tekton-task-stackrox-image-scan.yaml
 - pipeline-hello-flask.yaml
+- pipelinerun-hello-flask.yaml
