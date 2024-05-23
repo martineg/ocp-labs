@@ -6,6 +6,6 @@ resources:
 - hello-flask-route.yaml
 
 components:
-- ./hello-flask-pipeline/
+- ../components/hello-flask-pipeline/
 
 namespace: app1-dev
