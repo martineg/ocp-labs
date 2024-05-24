@@ -5,3 +5,5 @@ resources:
 - ./acs-ci-config
 - ./hello-flask-deployment
 - ./hello-flask-pipeline
+
+namespace: app1-dev
