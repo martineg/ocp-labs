@@ -1,0 +1,17 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: httpd
+  labels:
+    app: httpd
+spec:
+  to:
+    kind: Service
+    name: httpd
+    weight: 100
+  port:
+    targetPort: 8000-8000
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
