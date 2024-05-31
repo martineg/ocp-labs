@@ -1,14 +1,17 @@
 import os, time
 from flask import Flask, request, jsonify, abort, redirect, url_for, render_template
 from flask_healthz import healthz, HealthError
-
-
-app = Flask(__name__)
-app.register_blueprint(healthz, url_prefix="/healthz")
+from prometheus_flask_exporter import PrometheusMetrics
 
 APP_HEALTH_OK = True
 APP_VERSION = 1.0
 FEATURES = [ (feat, os.environ.get(feat)) for feat in os.environ if feat.startswith("FEAT_")]
+
+app = Flask(__name__)
+app.register_blueprint(healthz, url_prefix="/healthz")
+
+metrics = PrometheusMetrics(app)
+metrics.info("app_info", "ocp-labs demo", version=APP_VERSION)
 
 def fib(n):
     if n == 0: return 0
@@ -49,7 +52,9 @@ def version():
     return jsonify(version=APP_VERSION, features=FEATURES,
         hostname=os.environ.get("HOSTNAME", "localhost"))
 
+
 @app.route("/invalidate")
+@metrics.do_not_track()
 def invalidate():
     global APP_HEALTH_OK
     APP_HEALTH_OK = False
