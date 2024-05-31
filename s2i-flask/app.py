@@ -24,10 +24,11 @@ def healthy():
     else:
         return "ok"
 def liveness():
-    print(healthy())
+    healthy()
 
 def readiness():
-    print(healthy())
+    healthy()
+
 app.config.update(
     HEALTHZ = {
         "live" : "app.liveness",
