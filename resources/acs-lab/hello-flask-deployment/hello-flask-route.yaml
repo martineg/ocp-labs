@@ -11,4 +11,7 @@ spec:
     kind: Service
     name: hello-flask
     weight: 100
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
   wildcardPolicy: None
